@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+  <constant name="struts.i18n.encoding" value="UTF-8"></constant>
+  
+  <constant name="struts.objectFactory" value="spring"/>
+  
+  <package name="basicstruts" extends="struts-default">
+  
+  <action name="*Task" class="taskActionBean" method="{1}">
+    <result name="listTask">WEB-INF/jsp/task/listTask.jsp</result>
+    <result name="listTaskAction" type="redirect">listTask</result>
+    <result name="editTask">WEB-INF/jsp/task/editTask.jsp</result>
+  </action>
+  
+</package>
+</struts>
