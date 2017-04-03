@@ -20,13 +20,15 @@ div#content{
  margin:50px auto !important;
 }
 
+
+
 </style>
   <style>
   ul.sortable {
 /*     border: 1px solid #eee; */
-/*      background-color:lightblue;  */
+      /*background-color:;*/  
     width: 100%;
-    min-height: 200px;
+    min-height: 100px;
     min-width:200px;
     list-style-type: none;
     margin: 0;
@@ -34,16 +36,30 @@ div#content{
     margin-right: 10px;
     padding:50px;
     
+    
   }
+  
+
+   ul.sortable li span.index{
+   		color:DeepSkyBlue;
+   }
+   ul.sortable li span.taskName{
+   		color:MidnightBlue;
+   }   
+   
+   
+   
   .sortable li {
     margin: 0 5px 5px 5px;
     padding: 5px;
     font-size: 1.2em;
-    cursor:pointer;
+    cursor:move;
+    background-color: AliceBlue;
+    border-color:Feldspar;
 /*     width: 120px; */
   }
   table.sortableTable td{
-/*    	border:1px solid gray;  */
+/*     	border:1px solid gray;   */
 /*    	width:500px;  */
 
   	vertical-align: top;
@@ -59,16 +75,19 @@ div#content{
   
    
   td.leftRight{
-  	width:478px;
+   	width:478px; 
   }
   tr.trline{
   	height:4px;
-  	background: lightgray;
+  	border-bottom: 1px dashed lightgray;
+/*   	background: lightgray; */
   }
   td.tdline{
-
-	background: lightgray;
+	width:1px;
+	border-left: 1px dashed lightgray;
   }
+  
+    
   
     .my-ui-state-highlight{
   	border: 1px solid #dad55e;
@@ -76,6 +95,23 @@ div#content{
 	color: #777620;
 	height:36px;
   }
+  div.action span{
+  	cursor:pointer;
+  	font-size:12px;
+  	margin-left:10px;
+  }
+
+ 	
+	div.action span.glyphicon-thumbs-up{
+  		color:DarkCyan;
+	}  
+  	div.action span.glyphicon-edit{
+  		color:CornflowerBlue;
+	}  
+  	div.action span.glyphicon-trash{
+  		color:LightSalmon;
+	}  
+  
   
   span.taskName{
   	
@@ -83,6 +119,7 @@ div#content{
 
    
   </style>
+  
 <!--   <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
 <!--   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
   <script>
@@ -114,7 +151,7 @@ div#content{
     			var liHeight = $(this).height()+12;
     			expectedHeight+=liHeight;
     		});
-    		expectedHeight +=100;
+    		expectedHeight +=50;
     		if(expectedHeight>height1)
     			height1 = expectedHeight;
     		
@@ -126,7 +163,7 @@ div#content{
     	});
 
 
-    	 $("ul.sortable li span.index").css("color","blue");
+
     	 
     	 
     	 $("ul.sortable ").each(function(){
@@ -144,14 +181,16 @@ div#content{
     
 //     var t = setInterval(adjustSortableHeight,1000);
     
-    $("ul.sortable li").html("");
-    $("ul.sortable li").prepend("<span contenteditable='true' class='taskName'>taskName</span>");
-    $("ul.sortable li").prepend("<span class='index'>index</span>");
+//     $("ul.sortable li").html("");
+//     $("ul.sortable li").prepend("<span contenteditable='true' class='taskName'>taskName</span>");
+//     $("ul.sortable li").prepend("<span class='index'>index</span>");
     
 //     $("ul.sortable li").apend("<p class='taskName'></p>");
     
     
     
+     var sample = $("ul.sortable li").eq(0).html();
+     $("ul.sortable li").html(sample);
     
     
     adjustSortableHeight();
@@ -169,14 +208,30 @@ div#content{
  <div id="msg"></div>
  
  <table class="sortableTable" align="center">
+	 <tr>
+	 <td colspan="5" style="text-align:center"><span class="label label-danger">重要</span></td>
+	 </tr>
+
  	<tr class="row1">
+ 		<td></td>
  		<td class="leftRight">
 			<ul id="sortable1" class="sortable connectedSortable">
-			  <li class="ui-state-default">Item 1<span contenteditable='true' >fjkdaslfjaskl;</span></li>
-			  <li class="ui-state-default">Item 2</li>
-			  <li class="ui-state-default">Item 3</li>
-			  <li class="ui-state-default">Item 4</li>
-			  <li class="ui-state-default">Item 5</li>
+			  <li class="ui-state-default">
+			  	<span class='index'>index</span><span contenteditable='true' class='taskName'>taskName</span>
+			  	
+			  	<div class="pull-right action">
+				  	<span class="glyphicon glyphicon-thumbs-up"></span>
+				  	<span class=" glyphicon glyphicon-edit"></span>
+				  	<span class="glyphicon glyphicon-trash"></span>			  	
+			  	
+			  	
+			  	</div>
+
+			  	</li>
+			  <li class="ui-state-default"><span class='index'>index</span><span></span>Item 2</li>
+			  <li class="ui-state-default"><span class='index'>index</span>Item 3</li>
+			  <li class="ui-state-default"><span class='index'>index</span>Item 4</li>
+			  <li class="ui-state-default"><span class='index'>index</span>Item 5</li>
 			</ul> 		
  		</td>
  		<td class="tdline" >
@@ -191,11 +246,17 @@ div#content{
 			  <li class="ui-state-default">Item 5</li>
 			</ul> 		
  		</td>
+ 		<td></td>
  	</tr>
  	<tr class="trline" >
- 		<td  class="tdline" colspan="3"></td>
+ 		<td style="text-align:left"><span class="label label-danger">紧&nbsp;&nbsp;&nbsp;&nbsp;急</span></td>
+ 		<td></td>
+ 		<td  class="tdline centertd" ></td>
+ 		<td></td>
+ 		<td style="text-align:right"><span class="label label-default">不紧急</span></td>
  	</tr>
  	<tr  class="row2">
+ 		<td></td>
  		<td>
 			 <ul id="sortable3" class="sortable connectedSortable">
 			  <li class="ui-state-default">Item 1</li>
@@ -216,7 +277,12 @@ div#content{
 			  <li class="ui-state-default">Item 5</li>
 			</ul>		
  		</td>
+ 		<td></td>
  	</tr> 	
+ 	
+	 <tr>
+	 <td colspan="5" style="text-align:center"><span class="label label-default">不重要</span></td>
+	 </tr> 	
  </table>
 
  
@@ -226,3 +292,5 @@ div#content{
  
 </body>
 </html>
+
+
