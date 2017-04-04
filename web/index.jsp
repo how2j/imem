@@ -24,6 +24,33 @@ div#content{
 
 </style>
   <style>
+  ul.sortable.nodoing span.taskName{
+  	width:700px;
+  }
+  
+
+  ul.sortable.nodoing span.glyphicon-refresh{
+  	display:inline;
+  }
+  
+    
+  ul.sortable.doing span.glyphicon-refresh{
+  	display:none;
+  }  
+  
+  ul.sortable.nodoing span.glyphicon-thumbs-up{
+  	display:none;
+  }
+
+  ul.sortable.nodoing span.glyphicon-edit{
+  	display:none;
+  }
+    ul.sortable.nodoing span.glyphicon-trash{
+  	display:none;
+  }  
+  
+  
+  
   ul.sortable {
 /*     border: 1px solid #eee; */
       /*background-color:;*/  
@@ -47,8 +74,10 @@ div#content{
    ul.sortable li span.taskName{
    		color:MidnightBlue;
    		width:180px;
+   		
    		display:inline-block;
    		cursor:move;
+   		word-wrap: break-word;
    }   
    
    
@@ -69,6 +98,13 @@ div#content{
   	vertical-align: top;
 /*   	padding:10px; */
   	
+  }
+  
+  div.workingarea{
+  	margin:50px auto;
+/*   	border:1px solid red; */
+  	width:960px;
+  	height:960px;  
   }
   table.sortableTable{
   	margin:50px auto;
@@ -134,12 +170,12 @@ div#content{
   $( function() {
 	  var height1 = 0;
 	  var height2 = 0;
-    $( "#sortable1, #sortable2, #sortable3,#sortable4" ).sortable({
+    $( "ul.sortable" ).sortable({
       connectWith: ".connectedSortable",
       placeholder: "my-ui-state-highlight",
       cursor: "move",
       update: function( event, ui ) {
-    	  adjustSortableHeight();
+    	  sync();
     	  height1=0;
     	  height2=0;
       }
@@ -149,7 +185,7 @@ div#content{
     
     
     
-    function adjustSortableHeight(){
+    function sync(){
     	$("table.sortableTable tr.row1 ul.sortable").each(function(){
     		var thisHeight  = $(this).height();
     		var expectedHeight = 0;
@@ -176,25 +212,53 @@ div#content{
     	 
     	 $("ul.sortable ").each(function(){
     		 var index = 0;
+    		 var  quadrant = $(this).attr("quadrant");
+    		     		 
     		 $(this).children("li").each(function(){
     			 index++;
-    			 $(this).children("span.index").html( new String( index +'. ' ));	 
+    			 $(this).children("span.index").html( new String( index +'. ' ));
+    			 
+    			 if(undefined!=quadrant)
+    			 $(this).attr("quadrant",quadrant);
     		 });
 
     	 });
+    	 
+    	 var doingCount = 0;
+    	 $("ul.sortable.doing li").each(function(){
+    		 doingCount++;
+    	 });
+    	 
+    	 $("span.doingCount").html(doingCount);
+    	 
+    	 var finishCount = 0;
+    	 $("ul.sortable.finish li").each(function(){
+    		 finishCount++;
+    	 });
+    	 
+    	 $("span.finishCount").html(finishCount);
+
+    	 var deleteCount = 0;
+    	 $("ul.sortable.delete li").each(function(){
+    		 deleteCount++;
+    	 });
+    	 
+    	 $("span.deleteCount").html(deleteCount);
+    	 
+    	 
     	 
     	       
     }
        
     
-//     var t = setInterval(adjustSortableHeight,1000);
-    
-//     $("ul.sortable li").html("");
-//     $("ul.sortable li").prepend("<span contenteditable='true' class='taskName'>taskName</span>");
-//     $("ul.sortable li").prepend("<span class='index'>index</span>");
-    
-//     $("ul.sortable li").apend("<p class='taskName'></p>");
-    
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        // 获取已激活的标签页的名称
+        var activeTab = $(e.target).text();
+        // 获取前一个激活的标签页的名称
+        var previousTab = $(e.relatedTarget).text();
+        $(".active-tab span").html(activeTab);
+        $(".previous-tab span").html(previousTab);
+    });    
     
     
      var sample = $("ul.sortable li").eq(0).html();
@@ -208,14 +272,43 @@ div#content{
     	 $(this).parent("li").find("div.action span.glyphicon").attr("tid",randomId);
      });
      
+     
+     $(".taskName").dblclick(function(){
+    	 
+    	 var tid = $(this).attr("tid");
+    	 $("div.action span.glyphicon-edit[tid="+tid+"]").trigger("click");
+    	 
+     });
+     
      $("div.action span.glyphicon-edit").click(function(){
     	 var tid = $(this).attr("tid");
     	 var taskName= $("span.taskName[tid="+tid+"]").html();
     	 $(".editTaskName").attr("tid",tid);
     	 $(".editTaskName").val(taskName);
     	 $("#myModal").modal('show');
-    	     	 
      });
+     
+     $("div.action span.glyphicon-thumbs-up").click(function(){
+    	 var li= $(this).parents("li");
+    	 li.prependTo("ul.sortable.finish");
+    	 sync();
+     });
+     
+     $("div.action span.glyphicon-trash").click(function(){
+    	 var li= $(this).parents("li");
+    	 li.prependTo("ul.sortable.delete");
+    	 sync();
+     });      
+     
+     $("div.action span.glyphicon-refresh").click(function(){
+    	 var li= $(this).parents("li");
+    	 var quadrant = li.attr("quadrant");
+    	 console.log(quadrant);
+    	 console.log($("ul.sortable.doing[quadrant="+quadrant+"]"));
+    	 
+    	 li.prependTo("ul.sortable.doing[quadrant="+quadrant+"]");
+    	 sync();
+     });          
      
      $("#myModal").on("shown.bs.modal",function(){
     	 $(".editTaskName").focus();
@@ -235,7 +328,7 @@ div#content{
     	    }
     	});     
      
-    adjustSortableHeight();
+    sync();
     
     
     
@@ -247,107 +340,138 @@ div#content{
 <body>
  
  
+<div class="workingArea">
+
+
  <div id="msg"></div>
  
- <table class="sortableTable" align="center">
-	 <tr>
-	 <td colspan="5" style="text-align:center"><span class="label label-danger">重要</span></td>
-	 </tr>
+ <ul id="myTab" class="nav nav-tabs">
+   <li class="active">
+      <a href="#doing" data-toggle="tab">
+         进行中(<span class="doingCount">0</span>)
+      </a>
+   </li>
+   <li><a href="#finish" data-toggle="tab">已完成
+   (<span class="finishCount">0</span>)
+   </a></li>
+   <li><a href="#delete" data-toggle="tab">已删除
+   (<span class="deleteCount">0</span>)
+   </a></li>
+</ul>
+<div id="myTabContent" class="tab-content">
+   <div class="tab-pane fade in active" id="doing">
 
- 	<tr class="row1">
- 		<td></td>
- 		<td class="leftRight">
-			<ul id="sortable1" class="sortable connectedSortable">
-			  <li class="ui-state-default">
-			  	<span class='index'>index</span>
-			  	
-			  	<span class='taskName'>taskName</span>
-			  	
-			  	<div class="pull-right action" display="inilne-block;">
-				  	<span class="glyphicon glyphicon-thumbs-up"></span>
-				  	<span class=" glyphicon glyphicon-edit"></span>
-				  	<span class="glyphicon glyphicon-trash"></span>			  	
-			  	
-			  	
-			  	</div>	
+		   <table class="sortableTable" align="center">
+			 <tr>
+			 <td colspan="5" style="text-align:center"><span class="label label-danger">重要</span></td>
+			 </tr>
+		
+		 	<tr class="row1">
+		 		<td></td>
+		 		<td class="leftRight">
+					<ul id="sortable1" class="sortable connectedSortable doing" quadrant="1">
+					  <li class="ui-state-default">
+					  	<span class="index">index</span>
+					  	
+					  	<span class="taskName">taskName</span>
+					  	
+					  	<div class="pull-right action" display="inilne-block;">
+						  	<span class="glyphicon glyphicon-thumbs-up"></span>
+						  	<span class=" glyphicon glyphicon-edit"></span>
+						  	<span class="glyphicon glyphicon-trash"></span>
+						  	<span class="glyphicon glyphicon-refresh"></span>			  	
+					  	</div>	
+					  	</li>
+					  <li class="ui-state-default"><span class="index">index</span><span></span>Item 2</li>
+					  <li class="ui-state-default"><span class="index">index</span>Item 3</li>
+					  <li class="ui-state-default"><span class="index">index</span>Item 4</li>
+					  <li class="ui-state-default"><span class="index">index</span>Item 5</li>
+					</ul> 		
+		 		</td>
+		 		<td class="tdline">
+		 		
+		 		</td>
+		 		<td class="leftRight">
+					<ul id="sortable2" class="sortable connectedSortable doing" quadrant="2">
+					  <li class="ui-state-default">Item 1</li>
+					  <li class="ui-state-default">Item 2</li>
+					  <li class="ui-state-default">Item 3</li>
+					  <li class="ui-state-default">Item 4</li>
+					  <li class="ui-state-default">Item 5</li>
+					</ul> 		
+		 		</td>
+		 		<td></td>
+		 	</tr>
+		 	<tr class="trline">
+		 		<td style="text-align:left"><span class="label label-danger">紧&nbsp;&nbsp;&nbsp;&nbsp;急</span></td>
+		 		<td></td>
+		 		<td class="tdline centertd"></td>
+		 		<td></td>
+		 		<td style="text-align:right"><span class="label label-default">不紧急</span></td>
+		 	</tr>
+		 	<tr class="row2">
+		 		<td></td>
+		 		<td>
+					 <ul id="sortable3" class="sortable connectedSortable doing" quadrant="3">
+					  <li class="ui-state-default">Item 1</li>
+					  <li class="ui-state-default">Item 2</li>
+					  <li class="ui-state-default">Item 3</li>
+					  <li class="ui-state-default">Item 4</li>
+					  <li class="ui-state-default">Item 5</li>
+					</ul>		
+		 		</td>
+		 		<td class="tdline">
+		 		</td>
+		 		<td>
+					 <ul id="sortable4" class="sortable connectedSortable doing" quadrant="4">
+					  <li class="ui-state-default">Item 1</li>
+					  <li class="ui-state-default">Item 2</li>
+					  <li class="ui-state-default">Item 3</li>
+					  <li class="ui-state-default">Item 4</li>
+					  <li class="ui-state-default">Item 5</li>
+					</ul>		
+		 		</td>
+		 		<td></td>
+		 	</tr> 	
+		 	
+			 <tr>
+			 <td colspan="5" style="text-align:center"><span class="label label-default">不重要</span></td>
+			 </tr> 	
+		 </table>
+ 	</div>
 
-			  	</li>
-		  	
-			  	
-			  <li class="ui-state-default"><span class='index'>index</span><span></span>Item 2</li>
-			  <li class="ui-state-default"><span class='index'>index</span>Item 3</li>
-			  <li class="ui-state-default"><span class='index'>index</span>Item 4</li>
-			  <li class="ui-state-default"><span class='index'>index</span>Item 5</li>
-			</ul> 		
- 		</td>
- 		<td class="tdline" >
- 		
- 		</td>
- 		<td  class="leftRight">
-			<ul id="sortable2" class="sortable connectedSortable">
-			  <li class="ui-state-default">Item 1</li>
-			  <li class="ui-state-default">Item 2</li>
-			  <li class="ui-state-default">Item 3</li>
-			  <li class="ui-state-default">Item 4</li>
-			  <li class="ui-state-default">Item 5</li>
-			</ul> 		
- 		</td>
- 		<td></td>
- 	</tr>
- 	<tr class="trline" >
- 		<td style="text-align:left"><span class="label label-danger">紧&nbsp;&nbsp;&nbsp;&nbsp;急</span></td>
- 		<td></td>
- 		<td  class="tdline centertd" ></td>
- 		<td></td>
- 		<td style="text-align:right"><span class="label label-default">不紧急</span></td>
- 	</tr>
- 	<tr  class="row2">
- 		<td></td>
- 		<td>
-			 <ul id="sortable3" class="sortable connectedSortable">
-			  <li class="ui-state-default">Item 1</li>
-			  <li class="ui-state-default">Item 2</li>
-			  <li class="ui-state-default">Item 3</li>
-			  <li class="ui-state-default">Item 4</li>
-			  <li class="ui-state-default">Item 5</li>
-			</ul>		
- 		</td>
- 		<td  class="tdline">
- 		</td>
- 		<td>
-			 <ul id="sortable4" class="sortable connectedSortable">
-			  <li class="ui-state-default">Item 1</li>
-			  <li class="ui-state-default">Item 2</li>
-			  <li class="ui-state-default">Item 3</li>
-			  <li class="ui-state-default">Item 4</li>
-			  <li class="ui-state-default">Item 5</li>
-			</ul>		
- 		</td>
- 		<td></td>
- 	</tr> 	
- 	
-	 <tr>
-	 <td colspan="5" style="text-align:center"><span class="label label-default">不重要</span></td>
-	 </tr> 	
- </table>
-
- <script>
-$(function(){
-   $("#open").click(function(){
-      $("#myModal").modal('show');
-   });
-   $("#submit").click(function(){
-      $("#myModal").modal('hide');
-   });
-   $("#toggle").click(function(){
-      $("#myModal").modal('toggle');
-   });
-});
-</script>
+			
+			
+	<div class="tab-pane fade" id="finish">
+		   <ul id="sortableFinish" class="sortable connectedSortable finish nodoing">
+					  <li class="ui-state-default" quadrant="1">
+			
+					  	</li>
+					  <li quadrant="1" class="ui-state-default"><span class="index">index</span><span></span>Item 2</li>
+					  <li quadrant="1" class="ui-state-default"><span class="index">index</span>Item 3</li>
+					  <li quadrant="1" class="ui-state-default"><span class="index">index</span>Item 4</li>
+					  <li quadrant="1" class="ui-state-default"><span class="index">index</span>Item 5</li>
+			</ul>
+   </div>
+   <div class="tab-pane fade" id="delete">
+		   <ul id="sortableFinish" class="sortable connectedSortable delete nodoing">
+					  <li class="ui-state-default" quadrant="1">
+					  	</li>
+					  <li quadrant="1" class="ui-state-default"><span class="index">index</span><span></span>Item 2</li>
+					  <li quadrant="1" class="ui-state-default"><span class="index">index</span>Item 3</li>
+					  <li quadrant="1" class="ui-state-default"><span class="index">index</span>Item 4</li>
+					  <li quadrant="1" class="ui-state-default"><span class="index">index</span>Item 5</li>
+			</ul>   
+   </div>
+</div>
  
-<button  class="btn btn-default" id="open"> 打开模态窗口</button>
-<button class="btn btn-default"  id="close"> 关闭模态窗口</button>
-<button class="btn btn-default"  id="toggle"> 切换模态窗口</button>
+ 
+
+			 	
+
+</div>
+
+ 
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 <div class="modal-dialog">
