@@ -59,7 +59,7 @@ div#content{
     min-width:200px;
     list-style-type: none;
     margin: 0;
-    float: left;
+    
     margin-right: 10px;
     padding:50px;
     
@@ -137,10 +137,15 @@ div#content{
   }
   
 
+	div.action{
+		display:inline-block;
+		float:right;
+		z-index: 100;
+	}
   
   div.action span.glyphicon{
   	cursor:pointer;
-  	font-size1:14px;
+  	font-size1:20px;
  	padding:0px 0px;
   }
 
@@ -163,13 +168,14 @@ div#content{
 
    
   </style>
-  
+ 
 <!--   <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
 <!--   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
   <script>
   $( function() {
 	  var height1 = 0;
 	  var height2 = 0;
+	  var fadeTime =1000;
     $( "ul.sortable" ).sortable({
       connectWith: ".connectedSortable",
       placeholder: "my-ui-state-highlight",
@@ -179,7 +185,6 @@ div#content{
     	  height1=0;
     	  height2=0;
       }
-    
     }).disableSelection();
     
     
@@ -198,7 +203,10 @@ div#content{
     		if(expectedHeight>height1)
     			height1 = expectedHeight;
     		
+
     	});
+    	
+
     	$("table.sortableTable tr.row1 ul.sortable").each(function(){
     		var thisHeight  = $(this).height();
    			$(this).height(height1);
@@ -247,17 +255,12 @@ div#content{
     	 
     	 
     	 
-    	       
+    	 height1=0;
     }
        
     
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-        // 获取已激活的标签页的名称
-        var activeTab = $(e.target).text();
-        // 获取前一个激活的标签页的名称
-        var previousTab = $(e.relatedTarget).text();
-        $(".active-tab span").html(activeTab);
-        $(".previous-tab span").html(previousTab);
+		sync();
     });    
     
     
@@ -290,24 +293,40 @@ div#content{
      
      $("div.action span.glyphicon-thumbs-up").click(function(){
     	 var li= $(this).parents("li");
-    	 li.prependTo("ul.sortable.finish");
-    	 sync();
+    	 li.fadeOut(fadeTime,function(){
+    		 li.prependTo("ul.sortable.finish");
+    	 });
+    	 
+    	 li.fadeIn(function(){
+    		 sync();	 
+    	 });
+
+    	 
+    	 
      });
      
      $("div.action span.glyphicon-trash").click(function(){
     	 var li= $(this).parents("li");
-    	 li.prependTo("ul.sortable.delete");
-    	 sync();
+    	 li.fadeOut(fadeTime,function(){
+    		 li.prependTo("ul.sortable.delete");
+    	 });
+    	 
+    	 li.fadeIn(function(){
+    		 sync();	 
+    	 });    	 
      });      
      
      $("div.action span.glyphicon-refresh").click(function(){
     	 var li= $(this).parents("li");
-    	 var quadrant = li.attr("quadrant");
-    	 console.log(quadrant);
-    	 console.log($("ul.sortable.doing[quadrant="+quadrant+"]"));
+    	 li.fadeOut(fadeTime,function(){
+        	 var quadrant = li.attr("quadrant");
+        	 li.prependTo("ul.sortable.doing[quadrant="+quadrant+"]");
+    	 });
     	 
-    	 li.prependTo("ul.sortable.doing[quadrant="+quadrant+"]");
-    	 sync();
+    	 li.fadeIn(function(){
+    		 sync();	 
+    	 });    
+
      });          
      
      $("#myModal").on("shown.bs.modal",function(){
@@ -375,7 +394,7 @@ div#content{
 					  	
 					  	<span class="taskName">taskName</span>
 					  	
-					  	<div class="pull-right action" display="inilne-block;">
+					  	<div class="action">
 						  	<span class="glyphicon glyphicon-thumbs-up"></span>
 						  	<span class=" glyphicon glyphicon-edit"></span>
 						  	<span class="glyphicon glyphicon-trash"></span>
@@ -492,7 +511,7 @@ div#content{
       </div><!-- /.modal-dialog -->
 </div>
    
- 
+
  
 </body>
 </html>
