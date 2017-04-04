@@ -18,9 +18,16 @@ public class Task {
 	private String desc;
 	private int index;
 	private int status;
-	private int imem;
+	private int quadrant;
+	
 	public int getId() {
 		return id;
+	}
+	public int getQuadrant() {
+		return quadrant;
+	}
+	public void setQuadrant(int quadrant) {
+		this.quadrant = quadrant;
 	}
 	public void setId(int id) {
 		this.id = id;
@@ -49,11 +56,6 @@ public class Task {
 	public void setStatus(int status) {
 		this.status = status;
 	}
-	public int getImem() {
-		return imem;
-	}
-	public void setImem(int imem) {
-		this.imem = imem;
-	}
+
 	
 }

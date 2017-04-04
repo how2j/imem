@@ -20,7 +20,7 @@
 			<column name="status_"></column>
 		</property>
 		
-		<property name="imem" />
+		<property name="quadrant" />
 
 	</class>
 	
