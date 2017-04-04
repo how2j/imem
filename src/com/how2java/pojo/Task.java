@@ -13,12 +13,13 @@ public class Task {
 	
 	private int id;
 	private String name;
-	
-	
 	private String desc;
 	private int index;
 	private int status;
 	private int quadrant;
+
+	private String uuid;
+	
 	
 	public int getId() {
 		return id;
@@ -56,6 +57,13 @@ public class Task {
 	public void setStatus(int status) {
 		this.status = status;
 	}
+	public String getUuid() {
+		return uuid;
+	}
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
 
+	
 	
 }

@@ -47,5 +47,10 @@
 	<classpathentry kind="lib" path="E:/project/imem/web/WEB-INF/lib/struts2-core-2.2.1.jar"/>
 	<classpathentry kind="lib" path="E:/project/imem/web/WEB-INF/lib/struts2-spring-plugin-2.2.3.1.jar"/>
 	<classpathentry kind="lib" path="E:/project/imem/web/WEB-INF/lib/xwork-core-2.2.1.jar"/>
+	<classpathentry kind="lib" path="E:/project/imem/web/WEB-INF/lib/ezmorph-1.0.3.jar"/>
+	<classpathentry kind="lib" path="E:/project/imem/web/WEB-INF/lib/json-lib-2.1-jdk15.jar"/>
+	<classpathentry kind="lib" path="E:/project/imem/web/WEB-INF/lib/commons-lang-2.5.jar"/>
+	<classpathentry kind="lib" path="E:/project/imem/web/WEB-INF/lib/commons-beanutils-1.7.0.jar"/>
+	<classpathentry kind="lib" path="E:/project/imem/web/WEB-INF/lib/commons-logging.jar"/>
 	<classpathentry kind="output" path="web/WEB-INF/classes"/>
 </classpath>

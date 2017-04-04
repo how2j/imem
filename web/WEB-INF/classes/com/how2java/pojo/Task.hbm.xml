@@ -21,6 +21,7 @@
 		</property>
 		
 		<property name="quadrant" />
+		<property name="uuid" />
 
 	</class>
 	

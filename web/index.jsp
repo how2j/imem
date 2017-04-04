@@ -188,6 +188,66 @@ div#content{
     }).disableSelection();
     
     
+    function sync2db(){
+    	var arr = new Array(); 
+    	
+    	$("ul.sortable li").each(function(){
+    		li =  $(this);
+    		var lijson = li2json(li);
+    		arr.push(lijson);
+    	});
+    	
+    	var lijsons = arr.join();
+    	lijsons = arr.toString();
+    	lijsons = JSON.stringify(arr);
+    	
+    	var lijsonObject = $.parseJSON(lijsons);
+    	  
+    	console.log(lijsons);
+    	console.log(lijsonObject);
+    	
+    	var page = "jsonsTask";
+    	 $.ajax({
+             url: page,
+             data:{"taskJasons":lijsonObject},
+             success: function(result){
+               console.log("success");
+             }
+         });    	
+    }
+    
+    function li2json(li){
+    	var sample = '{id:"#id#",quadrant:"#quadrant#",uuid:"#uuid#",name:"#name#",index:"#index#"}';
+    	var id = li.attr("id");
+    	if(undefined==id)
+    		id=-1;
+    	var quadrant = li.attr("quadrant");
+    	var uuid = li.attr("uuid");
+    	if(undefined==uuid)
+    		uuid = "no-uuid";
+    	var name =li.find("span.taskName").html();
+    	var index = li.find("span.index").html().replace(".","");
+    	
+    	console.log("id:"+id);
+    	console.log("quadrant:"+quadrant);
+    	console.log("uuid:"+uuid);
+    	console.log("name:"+name);
+    	console.log("index:"+index);
+    	var jsonString = sample;
+    	jsonString = jsonString.replace("#id#",id);
+    	jsonString = jsonString.replace("#quadrant#",quadrant);
+    	jsonString = jsonString.replace("#uuid#",uuid);
+    	jsonString = jsonString.replace("#name#",name);
+    	jsonString = jsonString.replace("#index#",index);
+    	
+    	console.log(jsonString);
+    	console.log("----------------");
+    	return jsonString;
+    	
+    	
+    }
+    
+    
     
     
     function sync(){
@@ -256,6 +316,8 @@ div#content{
     	 
     	 
     	 height1=0;
+    	 
+    	 sync2db();
     }
        
     
@@ -265,6 +327,10 @@ div#content{
     
     
      var sample = $("ul.sortable li").eq(0).html();
+     
+     
+     
+     
      $("ul.sortable li").html(sample);
     
 
@@ -283,15 +349,29 @@ div#content{
     	 
      });
      
-     $("div.action span.glyphicon-edit").click(function(){
+
+     
+     function editTask(){
     	 var tid = $(this).attr("tid");
     	 var taskName= $("span.taskName[tid="+tid+"]").html();
     	 $(".editTaskName").attr("tid",tid);
     	 $(".editTaskName").val(taskName);
     	 $("#myModal").modal('show');
-     });
+     };
      
-     $("div.action span.glyphicon-thumbs-up").click(function(){
+     function deleteTask(){
+    	 var li= $(this).parents("li");
+    	 li.fadeOut(fadeTime,function(){
+    		 li.prependTo("ul.sortable.delete");
+    	 });
+    	 li.fadeIn(function(){
+    		 sync();	 
+    	 });       	 
+    	 
+    	 console.log("deleteTask function");
+     };
+     
+     function finishTask(){
     	 var li= $(this).parents("li");
     	 li.fadeOut(fadeTime,function(){
     		 li.prependTo("ul.sortable.finish");
@@ -299,24 +379,10 @@ div#content{
     	 
     	 li.fadeIn(function(){
     		 sync();	 
-    	 });
-
-    	 
-    	 
-     });
+    	 });     	 
+     };
      
-     $("div.action span.glyphicon-trash").click(function(){
-    	 var li= $(this).parents("li");
-    	 li.fadeOut(fadeTime,function(){
-    		 li.prependTo("ul.sortable.delete");
-    	 });
-    	 
-    	 li.fadeIn(function(){
-    		 sync();	 
-    	 });    	 
-     });      
-     
-     $("div.action span.glyphicon-refresh").click(function(){
+     function refreshTask(){
     	 var li= $(this).parents("li");
     	 li.fadeOut(fadeTime,function(){
         	 var quadrant = li.attr("quadrant");
@@ -326,16 +392,37 @@ div#content{
     	 li.fadeIn(function(){
     		 sync();	 
     	 });    
-
-     });          
+    	 
+     };
      
+     
+     function registerAction(){
+    	 $("div.action span.glyphicon-trash").off("click",deleteTask);
+    	 $("div.action span.glyphicon-thumbs-up").off("click",finishTask);
+    	 $("div.action span.glyphicon-edit").off("click",editTask);
+    	 $("div.action span.glyphicon-refresh").off("click",refreshTask);    	 
+    	 
+    	 $("div.action span.glyphicon-trash").on("click",deleteTask);
+    	 $("div.action span.glyphicon-thumbs-up").on("click",finishTask);
+    	 $("div.action span.glyphicon-edit").on("click",editTask);
+    	 $("div.action span.glyphicon-refresh").on("click",refreshTask);
+     };
+     
+     registerAction();
+
+
      $("#myModal").on("shown.bs.modal",function(){
     	 $(".editTaskName").focus();
+       });     
+     $("#myAddModal").on("shown.bs.modal",function(){
+    	 $(".addTaskNameInput").focus();
        });     
      
      $("#submitModuleTaskName").click(function(){
     	 var tid = $(".editTaskName").attr("tid");
     	 var taskName = $(".editTaskName").val();
+    	 if(0==taskName.length)
+    		 return;
     	 $("span.taskName[tid="+tid+"]").html(taskName);
     	 $("#myModal").modal('hide');
      });
@@ -346,6 +433,54 @@ div#content{
     	    	$("#submitModuleTaskName").trigger("click");
     	    }
     	});     
+     
+     
+     $(".addTaskNameInput").keypress(function (e) { 
+   	  var key = e.which; 
+   	    if (key == 13) {
+   	    	$("#submitModuleAddTaskName").trigger("click");
+   	    }
+   	});      
+     
+     $("button.addTaskButton").click(function(){
+    	 $(".addTaskNameInput").val("");
+    	 $("#myAddModal").modal('show');
+     });
+     
+     $("#submitModuleAddTaskName").click(function(){
+    	 $("#myAddModal").modal('hide');
+    	 
+    	 var taskName= $(".addTaskNameInput").val();
+    	 
+    	 if(0==taskName.length)
+    		 return;
+    	 
+    	 var sample = $("#liSample").html();
+    	 
+    	 var newLi = sample;
+    	 newLi = newLi.replace("#taskName#",taskName);
+    	 newLi = newLi.replace("#uuid#",uuid());
+    	 
+    	 $("#sortable1").prepend(newLi);
+    	 
+    	 
+    	 registerAction();
+    	 sync();
+     });
+     
+     function uuid(){
+    	 var s = [];
+         var hexDigits = "0123456789abcdef";
+         for (var i = 0; i < 36; i++) {
+             s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+         }
+         s[14] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
+         s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+         s[8] = s[13] = s[18] = s[23] = "-";
+         var uuid = s.join("");
+         return uuid;
+    	 
+     }
      
     sync();
     
@@ -382,14 +517,21 @@ div#content{
 
 		   <table class="sortableTable" align="center">
 			 <tr>
-			 <td colspan="5" style="text-align:center"><span class="label label-danger">重要</span></td>
+			 <td colspan="5" style="text-align:center"><span class="label label-danger">重要</span>
+			 <br>
+			 <br>
+			 <br>
+			 <button class="btn btn-success addTaskButton">新增</button>
+			 </td>
 			 </tr>
-		
+<tr>
+			 <td colspan="5" style="text-align:center"></td>
+			 </tr>		
 		 	<tr class="row1">
 		 		<td></td>
 		 		<td class="leftRight">
 					<ul id="sortable1" class="sortable connectedSortable doing" quadrant="1">
-					  <li class="ui-state-default">
+					  <li id="1" class="ui-state-default">
 					  	<span class="index">index</span>
 					  	
 					  	<span class="taskName">taskName</span>
@@ -511,7 +653,40 @@ div#content{
       </div><!-- /.modal-dialog -->
 </div>
    
+   
+<div class="modal fade" id="myAddModal" tabindex="-1" role="dialog" aria-labelledby="myAddModalLabel">
+<div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button data-dismiss="modal" class="close" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title">新增</h4>
+          </div>
+          <div class="modal-body">
+            <p>新增任务名称</p>
+            <input class="form-control addTaskNameInput">
+          </div>
+          <div class="modal-footer">
+            <button data-dismiss="modal" class="btn btn-default" type="button">关闭</button>
+            <button class="btn btn-primary" id="submitModuleAddTaskName" type="button">提交</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+</div>   
 
+<div id="liSample" class="hidden">
+					   <li class="ui-state-default" uuid="#uuid#" id="-1">
+					  	<span class="index">index</span>
+					  	
+					  	<span class="taskName">#taskName#</span>
+					  	
+					  	<div class="action">
+						  	<span class="glyphicon glyphicon-thumbs-up"></span>
+						  	<span class=" glyphicon glyphicon-edit"></span>
+						  	<span class="glyphicon glyphicon-trash"></span>
+						  	<span class="glyphicon glyphicon-refresh"></span>			  	
+					  	</div>	
+					  	</li>
+</div>
  
 </body>
 </html>
