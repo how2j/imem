@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.how2java.pojo">
+	<class name="Task" table="task_">
+		<id name="id" column="id">
+			<generator class="native">
+			</generator>
+		</id>
+		<property name="name" />
+		<property name="desc" >
+			<column name="desc_"></column>
+		</property>
+		<property name="index" >
+			<column name="index_"></column>
+		</property>
+		<property name="status" >
+			<column name="status_"></column>
+		</property>
+		
+		<property name="imem" />
+
+	</class>
+	
+</hibernate-mapping>

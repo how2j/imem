@@ -42,9 +42,13 @@ div#content{
 
    ul.sortable li span.index{
    		color:DeepSkyBlue;
+   		vertical-align: top;
    }
    ul.sortable li span.taskName{
    		color:MidnightBlue;
+   		width:180px;
+   		display:inline-block;
+   		cursor:move;
    }   
    
    
@@ -53,7 +57,7 @@ div#content{
     margin: 0 5px 5px 5px;
     padding: 5px;
     font-size: 1.2em;
-    cursor:move;
+    
     background-color: AliceBlue;
     border-color:Feldspar;
 /*     width: 120px; */
@@ -95,12 +99,19 @@ div#content{
 	color: #777620;
 	height:36px;
   }
-  div.action span{
+  
+
+  
+  div.action span.glyphicon{
   	cursor:pointer;
-  	font-size:12px;
-  	margin-left:10px;
+  	font-size1:14px;
+ 	padding:0px 0px;
   }
 
+ 	
+ 	div.action span.glyphicon:hover{
+ 		
+ 	}
  	
 	div.action span.glyphicon-thumbs-up{
   		color:DarkCyan;
@@ -113,9 +124,6 @@ div#content{
 	}  
   
   
-  span.taskName{
-  	
-  }
 
    
   </style>
@@ -136,8 +144,7 @@ div#content{
     	  height2=0;
       }
     
-    });
-//     .disableSelection();
+    }).disableSelection();
     
     
     
@@ -161,6 +168,7 @@ div#content{
    			$(this).height(height1);
 			$(this).parent("td").height(height1+10);
     	});
+
 
 
 
@@ -192,10 +200,44 @@ div#content{
      var sample = $("ul.sortable li").eq(0).html();
      $("ul.sortable li").html(sample);
     
-    
+
+     
+     $(".taskName").each(function(){
+    	 var randomId=       Math.round(Math.random() *10000);
+    	 $(this).attr("tid",randomId);
+    	 $(this).parent("li").find("div.action span.glyphicon").attr("tid",randomId);
+     });
+     
+     $("div.action span.glyphicon-edit").click(function(){
+    	 var tid = $(this).attr("tid");
+    	 var taskName= $("span.taskName[tid="+tid+"]").html();
+    	 $(".editTaskName").attr("tid",tid);
+    	 $(".editTaskName").val(taskName);
+    	 $("#myModal").modal('show');
+    	     	 
+     });
+     
+     $("#myModal").on("shown.bs.modal",function(){
+    	 $(".editTaskName").focus();
+       });     
+     
+     $("#submitModuleTaskName").click(function(){
+    	 var tid = $(".editTaskName").attr("tid");
+    	 var taskName = $(".editTaskName").val();
+    	 $("span.taskName[tid="+tid+"]").html(taskName);
+    	 $("#myModal").modal('hide');
+     });
+     
+     $(".editTaskName").keypress(function (e) { 
+    	  var key = e.which; 
+    	    if (key == 13) {
+    	    	$("#submitModuleTaskName").trigger("click");
+    	    }
+    	});     
+     
     adjustSortableHeight();
     
-    $("span.taskName").attr("contenteditable",true);
+    
     
   } );
   
@@ -217,17 +259,21 @@ div#content{
  		<td class="leftRight">
 			<ul id="sortable1" class="sortable connectedSortable">
 			  <li class="ui-state-default">
-			  	<span class='index'>index</span><span contenteditable='true' class='taskName'>taskName</span>
+			  	<span class='index'>index</span>
 			  	
-			  	<div class="pull-right action">
+			  	<span class='taskName'>taskName</span>
+			  	
+			  	<div class="pull-right action" display="inilne-block;">
 				  	<span class="glyphicon glyphicon-thumbs-up"></span>
 				  	<span class=" glyphicon glyphicon-edit"></span>
 				  	<span class="glyphicon glyphicon-trash"></span>			  	
 			  	
 			  	
-			  	</div>
+			  	</div>	
 
 			  	</li>
+		  	
+			  	
 			  <li class="ui-state-default"><span class='index'>index</span><span></span>Item 2</li>
 			  <li class="ui-state-default"><span class='index'>index</span>Item 3</li>
 			  <li class="ui-state-default"><span class='index'>index</span>Item 4</li>
@@ -285,9 +331,43 @@ div#content{
 	 </tr> 	
  </table>
 
+ <script>
+$(function(){
+   $("#open").click(function(){
+      $("#myModal").modal('show');
+   });
+   $("#submit").click(function(){
+      $("#myModal").modal('hide');
+   });
+   $("#toggle").click(function(){
+      $("#myModal").modal('toggle');
+   });
+});
+</script>
  
+<button  class="btn btn-default" id="open"> 打开模态窗口</button>
+<button class="btn btn-default"  id="close"> 关闭模态窗口</button>
+<button class="btn btn-default"  id="toggle"> 切换模态窗口</button>
 
- 
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button data-dismiss="modal" class="close" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title">编辑</h4>
+          </div>
+          <div class="modal-body">
+            <p>修改任务名称</p>
+            <input class="form-control editTaskName">
+          </div>
+          <div class="modal-footer">
+            <button data-dismiss="modal" class="btn btn-default" type="button">关闭</button>
+            <button class="btn btn-primary" id="submitModuleTaskName" type="button">提交</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+</div>
+   
  
  
 </body>
