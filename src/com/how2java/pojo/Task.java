@@ -1,5 +1,7 @@
 package com.how2java.pojo;
 
+import java.util.Date;
+
 public class Task {
 //	id
 //	name
@@ -15,9 +17,16 @@ public class Task {
 	private String name;
 	private String desc;
 	private int index;
-	private int status;
+	private String status;
 	private int quadrant;
+    private Date date;
 
+	public Date getDate() {
+		return date;
+	}
+	public void setDate(Date date) {
+		this.date = date;
+	}
 	private String uuid;
 	
 	
@@ -51,10 +60,10 @@ public class Task {
 	public void setIndex(int index) {
 		this.index = index;
 	}
-	public int getStatus() {
+	public String getStatus() {
 		return status;
 	}
-	public void setStatus(int status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 	public String getUuid() {
@@ -63,6 +72,12 @@ public class Task {
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
+	@Override
+	public String toString() {
+		return "Task [id=" + id + ", name=" + name + ", desc=" + desc + ", index=" + index + ", status=" + status
+				+ ", quadrant=" + quadrant + ", uuid=" + uuid + "]";
+	}
+	
 
 	
 	

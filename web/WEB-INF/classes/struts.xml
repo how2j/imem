@@ -14,6 +14,7 @@
     <result name="listTask">WEB-INF/jsp/task/listTask.jsp</result>
     <result name="listTaskAction" type="redirect">listTask</result>
     <result name="editTask">WEB-INF/jsp/task/editTask.jsp</result>
+    <result name="homepage">WEB-INF/jsp/task/homepageTask.jsp</result>
   </action>
   
 </package>

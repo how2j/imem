@@ -1,5 +1,6 @@
 package com.how2java.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.how2java.dao.TaskDAO;
@@ -8,50 +9,63 @@ import com.how2java.service.TaskService;
 
 public class TaskServiceImpl implements TaskService {
 
-	TaskDAO TaskDAO;
+	TaskDAO taskDAO;
 
 	public List<Task> list() {
-		List<Task> Tasks= TaskDAO.list();
-		if(Tasks.isEmpty()){
-			for (int i = 0; i < 5; i++) {
-				Task t = new Task();
-				t.setName("Task " + i);
-				TaskDAO.add(t);
-				Tasks.add(t);
-			}
-		}
+		List<Task> Tasks= taskDAO.list();
+		
 		return Tasks;
 	}
 
 	public TaskDAO getTaskDAO() {
-		return TaskDAO;
+		return taskDAO;
 	}
 
 	public void setTaskDAO(TaskDAO taskDAO) {
-		this.TaskDAO = taskDAO;
+		this.taskDAO = taskDAO;
 	}
 
 	@Override
 	public void add(Task t) {
-		TaskDAO.add(t);
+		taskDAO.add(t);
 		
 	}
+	
+	public List<Task> sync(List<Task> tasks){
+		List<Task> addTasks = new ArrayList<>();
+		//add
+		for (Task t: tasks) {
+			
+			if(t.getId()==0){
+				taskDAO.add(t);
+				addTasks.add(t);
+			}
+			else{
+				System.out.println(t);
+				taskDAO.update(t);
+			}
+		}
+		//update
+		
+		return addTasks;
+	}
+	
 
 
 
 	@Override
 	public void update(Task t) {
-		TaskDAO.update(t);
+		taskDAO.update(t);
 	}
 
 	@Override
 	public void delete(Task t) {
-		TaskDAO.delete(t);
+		taskDAO.delete(t);
 	}
 
 	@Override
 	public Task get(int id) {
-		return TaskDAO.get(id);
+		return taskDAO.get(id);
 	}
 
 	

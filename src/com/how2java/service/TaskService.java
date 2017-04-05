@@ -11,4 +11,5 @@ public interface TaskService {
 	public Task get(int id);
 	public void update(Task t);
 	public void delete(Task t);
+	public List<Task> sync(List<Task> tasks);
 }

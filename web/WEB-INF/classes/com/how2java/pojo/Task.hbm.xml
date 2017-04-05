@@ -5,7 +5,7 @@
 
 <hibernate-mapping package="com.how2java.pojo">
 	<class name="Task" table="task_">
-		<id name="id" column="id">
+		<id name="id" column="id" unsaved-value="0">
 			<generator class="native">
 			</generator>
 		</id>

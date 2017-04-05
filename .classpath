@@ -52,5 +52,6 @@
 	<classpathentry kind="lib" path="E:/project/imem/web/WEB-INF/lib/commons-lang-2.5.jar"/>
 	<classpathentry kind="lib" path="E:/project/imem/web/WEB-INF/lib/commons-beanutils-1.7.0.jar"/>
 	<classpathentry kind="lib" path="E:/project/imem/web/WEB-INF/lib/commons-logging.jar"/>
+	<classpathentry kind="lib" path="E:/project/imem/web/WEB-INF/lib/servlet-api.jar"/>
 	<classpathentry kind="output" path="web/WEB-INF/classes"/>
 </classpath>
